@@ -133,10 +133,14 @@ export class Game {
      * Handle keypresses and delegate to any game objects that might have key handling of their own.
      */
     handleKeyDown(event: KeyboardEvent) {
-        let handled: boolean = this.skier.handleInput(event.key);
-
-        if (handled) {
+        if (event.key === " ") {
+            this.skier.jump(); // Trigger the skier's jump
             event.preventDefault();
+        } else {
+            let handled: boolean = this.skier.handleInput(event.key);
+            if (handled) {
+                event.preventDefault();
+            }
         }
     }
 }
