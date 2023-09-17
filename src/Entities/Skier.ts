@@ -3,7 +3,7 @@
  * angles, and crashes into obstacles they run into. If caught by the rhino, the skier will get eaten and die.
  */
 
-import { IMAGE_NAMES, DIAGONAL_SPEED_REDUCER, KEYS } from "../Constants";
+import { IMAGE_NAMES, DIAGONAL_SPEED_REDUCER, KEYS, STATES, JUMP_FRAMES, DIRECTION, DIRECTION_IMAGES } from "../Constants";
 import { Entity } from "./Entity";
 import { Canvas } from "../Core/Canvas";
 import { ImageManager } from "../Core/ImageManager";
@@ -20,37 +20,18 @@ const STARTING_SPEED: number = 10;
  * The different states the skier can be in.
  */
 
-enum STATES {
-    STATE_SKIING = "skiing",
-    STATE_CRASHED = "crashed",
-    STATE_DEAD = "dead",
-    STATE_JUMPING = "skierJumping",
-}
-const JUMP_FRAMES = [
-    { x: 0, y: -20 },
-    { x: 0, y: -40 },
-];
+
 
 
 /**
  * The different directions the skier can be facing.
  */
-const DIRECTION_LEFT: number = 0;
-const DIRECTION_LEFT_DOWN: number = 1;
-const DIRECTION_DOWN: number = 2;
-const DIRECTION_RIGHT_DOWN: number = 3;
-const DIRECTION_RIGHT: number = 4;
+
 
 /**
  * Mapping of the image to display for the skier based upon which direction they're facing.
  */
-const DIRECTION_IMAGES: { [key: number]: IMAGE_NAMES } = {
-    [DIRECTION_LEFT]: IMAGE_NAMES.SKIER_LEFT,
-    [DIRECTION_LEFT_DOWN]: IMAGE_NAMES.SKIER_LEFTDOWN,
-    [DIRECTION_DOWN]: IMAGE_NAMES.SKIER_DOWN,
-    [DIRECTION_RIGHT_DOWN]: IMAGE_NAMES.SKIER_RIGHTDOWN,
-    [DIRECTION_RIGHT]: IMAGE_NAMES.SKIER_RIGHT,
-};
+
 
 export class Skier extends Entity {
     /**
@@ -66,7 +47,7 @@ export class Skier extends Entity {
     /**
      * What direction the skier is currently facing.
      */
-    direction: number = DIRECTION_DOWN;
+    direction: number = DIRECTION.DOWN;
 
     /**
      * How fast the skier is currently moving in the game world.
@@ -101,6 +82,7 @@ export class Skier extends Entity {
             { x: 0, y: -40 }
         ];
     }
+
     public startJump() {
         if (!this.jumping) {
             this.jumping = true;
@@ -200,17 +182,17 @@ export class Skier extends Entity {
      */
     move() {
         switch (this.direction) {
-            case DIRECTION_LEFT_DOWN:
+            case DIRECTION.LEFT_DOWN:
                 this.moveSkierLeftDown();
                 break;
-            case DIRECTION_DOWN:
+            case DIRECTION.DOWN:
                 this.moveSkierDown();
                 break;
-            case DIRECTION_RIGHT_DOWN:
+            case DIRECTION.RIGHT_DOWN:
                 this.moveSkierRightDown();
                 break;
-            case DIRECTION_LEFT:
-            case DIRECTION_RIGHT:
+            case DIRECTION.LEFT:
+            case DIRECTION.RIGHT:
                 // Specifically calling out that we don't move the skier each frame if they're facing completely horizontal.
                 break;
         }
@@ -330,10 +312,10 @@ export class Skier extends Entity {
      */
     turnLeft() {
         if (this.isCrashed()) {
-            this.recoverFromCrash(DIRECTION_LEFT);
+            this.recoverFromCrash(DIRECTION.LEFT);
         }
 
-        if (this.direction === DIRECTION_LEFT) {
+        if (this.direction === DIRECTION.LEFT) {
             this.moveSkierLeft();
         } else {
             this.setDirection(this.direction - 1);
@@ -346,10 +328,10 @@ export class Skier extends Entity {
      */
     turnRight() {
         if (this.isCrashed()) {
-            this.recoverFromCrash(DIRECTION_RIGHT);
+            this.recoverFromCrash(DIRECTION.RIGHT);
         }
 
-        if (this.direction === DIRECTION_RIGHT) {
+        if (this.direction === DIRECTION.RIGHT) {
             this.moveSkierRight();
         } else {
             this.setDirection(this.direction + 1);
@@ -365,7 +347,7 @@ export class Skier extends Entity {
             return;
         }
 
-        if (this.direction === DIRECTION_LEFT || this.direction === DIRECTION_RIGHT) {
+        if (this.direction === DIRECTION.LEFT || this.direction === DIRECTION.RIGHT) {
             this.moveSkierUp();
         }
     }
@@ -379,7 +361,7 @@ export class Skier extends Entity {
             return;
         }
 
-        this.setDirection(DIRECTION_DOWN);
+        this.setDirection(DIRECTION.DOWN);
     }
 
     /**
@@ -422,6 +404,14 @@ export class Skier extends Entity {
         if (collision) {
             this.crash();
         }
+    }
+    /**
+     * reset skier position when game restarts
+     */
+    resetPosition() {
+        this.x = 0;
+        this.y = 0;
+        this.setDirection(DIRECTION.DOWN);
     }
 
     /**
