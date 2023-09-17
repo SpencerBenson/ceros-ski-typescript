@@ -285,9 +285,9 @@ export class Skier extends Entity {
      * Move the skier left. Since completely horizontal movement isn't frame based, just move incrementally based upon
      * the starting speed.
      */
-    // moveSkierLeft() {
-    //     this.position.x -= SKIER.STARTING_SPEED;
-    // }
+    moveSkierLeft() {
+        this.position.x -= SKIER.STARTING_SPEED;
+    }
 
     /**
      * Move the skier diagonally left in equal amounts down and to the left. Use the current speed, reduced by the scale
@@ -318,9 +318,9 @@ export class Skier extends Entity {
      * Move the skier right. Since completely horizontal movement isn't frame based, just move incrementally based upon
      * the starting speed.
      */
-    // moveSkierRight() {
-    //     this.position.x += SKIER.STARTING_SPEED;
-    // }
+    moveSkierRight() {
+        this.position.x += SKIER.STARTING_SPEED;
+    }
 
     /**
      * Move the skier up. Since moving up isn't frame based, just move incrementally based upon
@@ -380,7 +380,7 @@ export class Skier extends Entity {
         }
 
         if (this.direction === SKIER.DIRECTION.LEFT) {
-            // this.moveSkierLeft();
+            this.moveSkierLeft();
         } else {
             this.setDirection(this.direction - 1);
         }
@@ -396,7 +396,7 @@ export class Skier extends Entity {
         }
 
         if (this.direction === SKIER.DIRECTION.RIGHT) {
-            // this.moveSkierRight();
+            this.moveSkierRight();
         } else {
             this.setDirection(this.direction + 1);
         }
