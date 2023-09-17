@@ -3,8 +3,7 @@
  * angles, and crashes into obstacles they run into. If caught by the rhino, the skier will get eaten and die.
  */
 
-import { IMAGE_NAMES, DIAGONAL_SPEED_REDUCER, KEYS, JUMP_RAMP } from "../Constants";
-
+import { IMAGE_NAMES, DIAGONAL_SPEED_REDUCER, KEYS } from "../Constants";
 import { Entity } from "./Entity";
 import { Canvas } from "../Core/Canvas";
 import { ImageManager } from "../Core/ImageManager";
@@ -73,9 +72,6 @@ export class Skier extends Entity {
      */
     obstacleManager: ObstacleManager;
 
-    private isJumping: boolean = false;
-    private jumpFrames: number = 0;
-
     /**
      * Init the skier.
      */
@@ -128,14 +124,6 @@ export class Skier extends Entity {
         if (this.isSkiing()) {
             this.move();
             this.checkIfHitObstacle();
-        }
-        if (this.isJumping) {
-            this.jumpFrames++;
-
-            // Implement logic for skier's jump animation here
-            if (this.jumpFrames >= JUMP_FRAMES) {
-                this.isJumping = false;
-            }
         }
     }
 
@@ -223,7 +211,7 @@ export class Skier extends Entity {
     /**
      * Handle keyboard input. If the skier is dead, don't handle any input.
      */
-    handleInput(inputKey: string): boolean {
+    handleInput(inputKey: string) {
         if (this.isDead()) {
             return false;
         }
@@ -243,23 +231,11 @@ export class Skier extends Entity {
             case KEYS.DOWN:
                 this.turnDown();
                 break;
-            case KEYS.SPACE:
-                this.jump();
-                break;
             default:
                 handled = false;
         }
 
         return handled;
-    }
-    /**
-     * Jump when user presses Spacebar
-     */
-    jump() {
-        if (!this.isJumping) {
-            this.isJumping = true;
-            this.jumpFrames = 0;
-        }
     }
 
     /**

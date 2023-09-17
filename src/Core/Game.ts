@@ -2,7 +2,7 @@
  * The main game class. This initializes the game as well as runs the game/render loop and initial handling of input.
  */
 
-import { GAME_CANVAS, GAME_WIDTH, GAME_HEIGHT, IMAGES, IMAGE_NAMES } from "../Constants";
+import { GAME_CANVAS, GAME_WIDTH, GAME_HEIGHT, IMAGES } from "../Constants";
 import { Canvas } from "./Canvas";
 import { ImageManager } from "./ImageManager";
 import { Position, Rect } from "./Utils";
@@ -34,7 +34,6 @@ export class Game {
      * The skier player
      */
     private skier!: Skier;
-    private isJumping: boolean = false;
 
     /**
      * The enemy that chases the skier
@@ -139,51 +138,5 @@ export class Game {
         if (handled) {
             event.preventDefault();
         }
-        if (event.key === " ") {
-            // Spacebar pressed to jump
-            if (!this.isJumping) {
-                this.isJumping = true;
-                this.jump();
-            }
-        }
     }
-
-    private jump() {
-        const JUMP_RAMP: IMAGE_NAMES = IMAGE_NAMES.JUMP_RAMP;
-        const JUMP_RAMP_WIDTH: number = 50; // Adjust the width as needed
-
-        const jumpImages = this.imageManager.getImage(JUMP_RAMP);
-        if (jumpImages && jumpImages instanceof HTMLImageElement) {
-            const jumpImageArray = Array.isArray(jumpImages) ? jumpImages : [jumpImages]; // Ensure it's an array
-
-            const duration = 500; // Milliseconds for the jump animation
-            const jumpHeight = 200; // Adjust as needed
-
-            let animationStartTime = Date.now();
-
-            const animateJump = () => {
-                const currentTime = Date.now();
-                const elapsedTime = currentTime - animationStartTime;
-                const jumpProgress = Math.min(elapsedTime / duration, 1); // Ensure it's capped at 1
-
-                const jumpIndex = Math.floor(jumpProgress * jumpImageArray.length);
-                const jumpImage = jumpImageArray[jumpIndex];
-
-                this.canvas.clearCanvas();
-                this.updateGameWindow();
-                this.drawGameWindow();
-                this.canvas.drawImage(jumpImage, this.skier.getPosition().x, this.skier.getPosition().y - jumpHeight, JUMP_RAMP_WIDTH, JUMP_RAMP_WIDTH);
-
-                if (jumpProgress < 1) {
-                    requestAnimationFrame(animateJump);
-                } else {
-                    this.isJumping = false;
-                }
-            };
-
-            requestAnimationFrame(animateJump);
-        }
-    }
-
-
 }

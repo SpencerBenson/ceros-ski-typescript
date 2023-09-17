@@ -47,26 +47,16 @@ export abstract class Entity {
     /**
      * Draw the entity to the canvas centered on the X,Y position.
      */
-    /**
-  * Draw the entity to the canvas centered on the X,Y position.
-  */
     draw() {
         const image = this.imageManager.getImage(this.imageName);
-
         if (!image) {
             return;
         }
 
-        const drawX = this.position.x - (Array.isArray(image) ? image[0].width / 2 : image.width / 2);
-        const drawY = this.position.y - (Array.isArray(image) ? image[0].height / 2 : image.height / 2);
+        const drawX = this.position.x - image.width / 2;
+        const drawY = this.position.y - image.height / 2;
 
-        if (Array.isArray(image)) {
-            for (const img of image) {
-                this.canvas.drawImage(img, drawX, drawY, img.width, img.height);
-            }
-        } else {
-            this.canvas.drawImage(image, drawX, drawY, image.width, image.height);
-        }
+        this.canvas.drawImage(image, drawX, drawY, image.width, image.height);
     }
 
     /**
@@ -78,25 +68,13 @@ export abstract class Entity {
             return null;
         }
 
-
-        if (Array.isArray(image)) {
-            const boundsArray = image.map(img => new Rect(
-                this.position.x - img.width / 2,
-                this.position.y - img.height / 2,
-                this.position.x + img.width / 2,
-                this.position.y + img.height / 2
-            ));
-            return boundsArray.reduce((a, b) => a.union(b));
-        } else {
-            return new Rect(
-                this.position.x - image.width / 2,
-                this.position.y - image.height / 2,
-                this.position.x + image.width / 2,
-                this.position.y + image.height / 2
-            );
-        }
+        return new Rect(
+            this.position.x - image.width / 2,
+            this.position.y - image.height / 2,
+            this.position.x + image.width / 2,
+            this.position.y
+        );
     }
-
 
     /**
      * All entities need to define if they die and what happens when they do

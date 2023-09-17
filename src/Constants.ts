@@ -3,29 +3,12 @@ import { iImage } from "./Interfaces/iImage";
 export const GAME_CANVAS = "skiCanvas";
 export const GAME_WIDTH = window.innerWidth;
 export const GAME_HEIGHT = window.innerHeight;
-export const JUMP_RAMP = "jump_ramp";
-export const _WIDTH = 40;
-export const ROCK_WIDTH = 50;
-export const TREE_WIDTH = 60;
-
-export enum OBSTACLE_TYPES {
-    ROCK,
-    TREE,
-    JUMP_RAMP,
-}
-
-export enum SKIER_DIRECTIONS {
-    DOWN = "down",
-    LEFT_DOWN = "left-down",
-    RIGHT_DOWN = "right-down",
-}
 
 export enum KEYS {
     LEFT = "ArrowLeft",
     RIGHT = "ArrowRight",
     UP = "ArrowUp",
     DOWN = "ArrowDown",
-    SPACE = 'Space'
 }
 
 export enum IMAGE_NAMES {
@@ -48,7 +31,6 @@ export enum IMAGE_NAMES {
     RHINO_EAT4 = "rhinoEat4",
     RHINO_CELEBRATE1 = "rhinoCelebrate1",
     RHINO_CELEBRATE2 = "rhinoCelebrate2",
-    JUMP_RAMP = "jump_ramp",
 }
 
 export const IMAGES: iImage[] = [
@@ -71,7 +53,6 @@ export const IMAGES: iImage[] = [
     { name: IMAGE_NAMES.RHINO_EAT4, url: "img/rhino_eat_4.png" },
     { name: IMAGE_NAMES.RHINO_CELEBRATE1, url: "img/rhino_celebrate_1.png" },
     { name: IMAGE_NAMES.RHINO_CELEBRATE2, url: "img/rhino_celebrate_2.png" },
-    { name: IMAGE_NAMES.JUMP_RAMP, url: "img/jump_ramp.png" },
 ];
 
 export const ANIMATION_FRAME_SPEED_MS: number = 250;
