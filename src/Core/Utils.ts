@@ -39,6 +39,19 @@ export class Rect {
         this.right = right;
         this.bottom = bottom;
     }
+
+    /**
+     * Calculate the union of this rectangle with another rectangle.
+     * The result is a new rectangle that encompasses both input rectangles.
+     */
+    union(otherRect: Rect): Rect {
+        const left = Math.min(this.left, otherRect.left);
+        const top = Math.min(this.top, otherRect.top);
+        const right = Math.max(this.right, otherRect.right);
+        const bottom = Math.max(this.bottom, otherRect.bottom);
+
+        return new Rect(left, top, right, bottom);
+    }
 }
 
 /**
