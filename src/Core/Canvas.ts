@@ -60,12 +60,13 @@ export class Canvas {
      * Get the canvas DOM element and make it the proper size. Also ensure it compensates for device pixel scaling.
      */
     setupCanvas() {
-        this.canvas.width = this.width * window.devicePixelRatio;
-        this.canvas.height = this.height * window.devicePixelRatio;
+        const pixelRatio = window.devicePixelRatio || 1;
+        this.canvas.width = this.width * pixelRatio;
+        this.canvas.height = this.height * pixelRatio;
         this.canvas.style.width = this.width + "px";
         this.canvas.style.height = this.height + "px";
 
-        this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        this.ctx.scale(pixelRatio, pixelRatio);
     }
 
     /**
@@ -87,9 +88,9 @@ export class Canvas {
      * Draw an Image at the desired coordinates relative to the drawOffset position at the desired size.
      */
     drawImage(image: HTMLImageElement, x: number, y: number, width: number, height: number) {
-        x -= this.drawOffset.x;
-        y -= this.drawOffset.y;
+        const scaledX = x * window.devicePixelRatio - this.drawOffset.x;
+        const scaledY = y * window.devicePixelRatio - this.drawOffset.y;
 
-        this.ctx.drawImage(image, x, y, width, height);
+        this.ctx.drawImage(image, scaledX, scaledY, width, height);
     }
 }
