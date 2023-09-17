@@ -56,6 +56,24 @@ export const IMAGES: iImage[] = [
     { name: IMAGE_NAMES.RHINO_CELEBRATE2, url: "img/rhino_celebrate_2.png" },
     { name: IMAGE_NAMES.JUMPING_SKIER, url: "img/skier_jump_1.png" },
 ];
+export enum STATES {
+    STATE_SKIING = "skiing",
+    STATE_CRASHED = "crashed",
+    STATE_DEAD = "dead",
+    STATE_JUMPING = "skierJumping",
+}
+export const JUMP_FRAMES = [
+    { x: 0, y: -20 },
+    { x: 0, y: -40 },
+];
+export enum DIRECTION {
+
+    LEFT = 0,
+    LEFT_DOWN = 1,
+    DOWN = 2,
+    RIGHT_DOWN = 3,
+    RIGHT = 4,
+}
 
 export const ANIMATION_FRAME_SPEED_MS: number = 250;
 export const DIAGONAL_SPEED_REDUCER: number = 1.4142;
