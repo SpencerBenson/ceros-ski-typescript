@@ -31,6 +31,7 @@ export enum IMAGE_NAMES {
     RHINO_EAT4 = "rhinoEat4",
     RHINO_CELEBRATE1 = "rhinoCelebrate1",
     RHINO_CELEBRATE2 = "rhinoCelebrate2",
+    JUMPING_SKIER = "jumping_skier"
 }
 
 export const IMAGES: iImage[] = [
@@ -53,6 +54,7 @@ export const IMAGES: iImage[] = [
     { name: IMAGE_NAMES.RHINO_EAT4, url: "img/rhino_eat_4.png" },
     { name: IMAGE_NAMES.RHINO_CELEBRATE1, url: "img/rhino_celebrate_1.png" },
     { name: IMAGE_NAMES.RHINO_CELEBRATE2, url: "img/rhino_celebrate_2.png" },
+    { name: IMAGE_NAMES.JUMPING_SKIER, url: "img/skier_jump_1.png" },
 ];
 
 export const ANIMATION_FRAME_SPEED_MS: number = 250;
