@@ -24,7 +24,13 @@ enum STATES {
     STATE_SKIING = "skiing",
     STATE_CRASHED = "crashed",
     STATE_DEAD = "dead",
+    STATE_JUMPING = "skierJumping",
 }
+const JUMP_FRAMES = [
+    { x: 0, y: -20 },
+    { x: 0, y: -40 },
+];
+
 
 /**
  * The different directions the skier can be facing.
@@ -71,6 +77,15 @@ export class Skier extends Entity {
      * Stored reference to the ObstacleManager
      */
     obstacleManager: ObstacleManager;
+    // private state: SKIER_STATES = SKIER_STATES.SKIING;
+    private jumpCount: number = 0;
+    private jumpingFrameIndex: number = 0;
+    private jumpFrames: { x: number; y: number }[] = [];
+    private currentJumpFrame: number = 0;
+    private jumping: boolean = true;
+    private JUMP_FRAME_DELAY: number = 5;
+    private x: number;
+    private y: number;
 
     /**
      * Init the skier.
@@ -79,6 +94,18 @@ export class Skier extends Entity {
         super(x, y, imageManager, canvas);
 
         this.obstacleManager = obstacleManager;
+        this.x = x;
+        this.y = y;
+        this.jumpFrames = [
+            { x: 0, y: -20 },
+            { x: 0, y: -40 }
+        ];
+    }
+    public startJump() {
+        if (!this.jumping) {
+            this.jumping = true;
+            this.currentJumpFrame = 0;
+        }
     }
 
     /**
@@ -93,6 +120,12 @@ export class Skier extends Entity {
      */
     isSkiing(): boolean {
         return this.state === STATES.STATE_SKIING;
+    }
+    /**
+         * Is the skier currently in the jumping state
+         */
+    isJumping(): boolean {
+        return this.state === STATES.STATE_JUMPING;
     }
 
     /**
@@ -121,9 +154,24 @@ export class Skier extends Entity {
      * Move the skier and check to see if they've hit an obstacle. The skier only moves in the skiing state.
      */
     update() {
-        if (this.isSkiing()) {
-            this.move();
-            this.checkIfHitObstacle();
+
+        if (this.jumping) {
+            // Apply jump frames
+            if (this.currentJumpFrame < this.jumpFrames.length) {
+                const jumpFrame = this.jumpFrames[this.currentJumpFrame];
+                this.x += jumpFrame.x;
+                this.y += jumpFrame.y;
+                this.currentJumpFrame++;
+            } else {
+                // End the jump animation
+                this.jumping = false;
+                this.currentJumpFrame = 0;
+            }
+        } else {
+            if (this.isSkiing()) {
+                this.move();
+                this.checkIfHitObstacle();
+            }
         }
     }
 
@@ -137,7 +185,16 @@ export class Skier extends Entity {
 
         super.draw();
     }
-
+    /**
+    * Make the  skier Jump .
+    */
+    jump() {
+        if (this.isJumping()) {
+            this.state = STATES.STATE_JUMPING;
+            this.jumpCount = 0;
+            this.jumpingFrameIndex = 0;
+        }
+    }
     /**
      * Move the skier based upon the direction they're currently facing. This handles frame update movement.
      */
@@ -236,6 +293,35 @@ export class Skier extends Entity {
         }
 
         return handled;
+    }
+
+    /**
+        * Handle Skier Jumpingt.
+        */
+    private handleJumping() {
+        // Check if the skier has completed the jump animation
+        if (this.jumpingFrameIndex === JUMP_FRAMES.length - 1) {
+            this.state = STATES.STATE_SKIING; // Return to skiing state
+        } else {
+            // Update skier position and draw the jumping frame
+            this.x += JUMP_FRAMES[this.jumpingFrameIndex].x;
+            this.y += JUMP_FRAMES[this.jumpingFrameIndex].y;
+            this.drawJumpingFrame();
+            this.jumpCount++;
+
+            // Increase jumping frame index after a few jumps (adjust this value)
+            if (this.jumpCount >= this.JUMP_FRAME_DELAY) {
+                this.jumpingFrameIndex++;
+                this.jumpCount = 0;
+            }
+        }
+    }
+    // Draw the jumping frame
+    private drawJumpingFrame() {
+        const image = this.imageManager.getImage(IMAGE_NAMES.JUMPING_SKIER);
+        if (image) {
+            this.canvas.drawImage(image, this.x, this.y, image.width, image.height);
+        }
     }
 
     /**
