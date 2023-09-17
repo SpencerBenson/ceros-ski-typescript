@@ -61,6 +61,16 @@ export class Game {
 
         this.calculateGameWindow();
         this.obstacleManager.placeInitialObstacles();
+        this.drawStartInstructions();
+    }
+
+    /**
+     * Add instructions to player
+     */
+    drawStartInstructions() {
+        this.canvas.ctx.fillStyle = "white";
+        this.canvas.ctx.font = "24px Arial";
+        this.canvas.ctx.fillText("Press any arrow key to start the game", 50, this.canvas.height / 2);
     }
 
     /**
