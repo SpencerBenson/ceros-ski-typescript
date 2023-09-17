@@ -2,7 +2,7 @@
  * The main game class. This initializes the game as well as runs the game/render loop and initial handling of input.
  */
 
-import { GAME_CANVAS, GAME_WIDTH, GAME_HEIGHT, IMAGES } from "../Constants";
+import { GAME_CANVAS, GAME_WIDTH, GAME_HEIGHT, IMAGES, DIRECTION } from "../Constants";
 import { Canvas } from "./Canvas";
 import { ImageManager } from "./ImageManager";
 import { Position, Rect } from "./Utils";
@@ -34,11 +34,13 @@ export class Game {
      * The skier player
      */
     private skier!: Skier;
+    private gameEnded: boolean = false;
 
     /**
      * The enemy that chases the skier
      */
     private rhino!: Rhino;
+    private score: number = 0;
 
     /**
      * Initialize the game and setup any input handling needed.
@@ -63,6 +65,10 @@ export class Game {
         this.obstacleManager.placeInitialObstacles();
         this.drawStartInstructions();
     }
+    /**
+     * Allow user to manually start the game 
+     */
+
 
     /**
      * Add instructions to player
@@ -75,9 +81,54 @@ export class Game {
 
     /**
      * Setup listeners for any input events we might need.
+     * Allow user to manually start the game.
      */
+
     setupInputHandling() {
-        document.addEventListener("keydown", this.handleKeyDown.bind(this));
+        document.addEventListener("keydown", (event: KeyboardEvent) => {
+            if (this.isGameRunning()) {
+                // Handle skier movement and jump as usual
+                if (event.key === " ") {
+                    this.skier.jump();
+                    event.preventDefault();
+                } else {
+                    let handled: boolean = this.skier.handleInput(event.key);
+                    if (handled) {
+                        event.preventDefault();
+                    }
+                }
+            } else {
+                // Start the game on any arrow key press
+                if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+                    this.startGame();
+                }
+            }
+
+            // Restart the game on 'R' key press if it has ended
+            if (this.gameEnded && event.key === "r" || event.key === "R") {
+                this.restartGame();
+            }
+        });
+    }
+
+    /**
+     * Remove any start instructions or game over screen if present
+     */
+    startGame() {
+
+        this.canvas.clearCanvas();
+
+        // Initialize the game objects and start the game loop
+        this.init();
+        this.run();
+    }
+
+    /**
+     * Check if the game is running based on the skier's state
+     */
+    isGameRunning(): boolean {
+
+        return this.skier.isSkiing() || this.skier.isJumping();
     }
 
     /**
@@ -96,8 +147,14 @@ export class Game {
 
         this.updateGameWindow();
         this.drawGameWindow();
+        this.drawScore();
 
         requestAnimationFrame(this.run.bind(this));
+    }
+    drawScore() {
+        this.canvas.ctx.fillStyle = "white";
+        this.canvas.ctx.font = "24px Arial";
+        this.canvas.ctx.fillText(`Score: ${this.score}`, 20, 40);
     }
 
     /**
@@ -143,14 +200,26 @@ export class Game {
      * Handle keypresses and delegate to any game objects that might have key handling of their own.
      */
     handleKeyDown(event: KeyboardEvent) {
-        if (event.key === " ") {
-            this.skier.jump(); // Trigger the skier's jump
-            event.preventDefault();
+        if (this.gameEnded && event.key === "R") {
+            this.restartGame();
         } else {
-            let handled: boolean = this.skier.handleInput(event.key);
-            if (handled) {
+            if (event.key === " ") {
+                this.skier.jump(); // Trigger the skier's jump
                 event.preventDefault();
+            } else {
+                let handled: boolean = this.skier.handleInput(event.key);
+                if (handled) {
+                    event.preventDefault();
+                }
             }
         }
+    }
+
+    restartGame() {
+        this.score = 0;
+        this.skier.resetPosition(); // You need to implement this method
+        this.obstacleManager.placeInitialObstacles();
+        this.gameEnded = false;
+        this.score = 0; // Reset the score to 0
     }
 }
