@@ -318,7 +318,7 @@ export class Skier extends Entity {
     }
     // Draw the jumping frame
     private drawJumpingFrame() {
-        const image = this.imageManager.getImage(IMAGE_NAMES.JUMPING_SKIER);
+        const image = this.imageManager.getImage(IMAGE_NAMES.SKIER_JUMP1);
         if (image) {
             this.canvas.drawImage(image, this.x, this.y, image.width, image.height);
         }
