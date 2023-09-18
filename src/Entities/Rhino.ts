@@ -3,38 +3,22 @@
  * different animations that it cycles between depending upon the rhino's state.
  */
 
-import { ANIMATION_FRAME_SPEED_MS, IMAGE_NAMES } from "../Constants";
+import {
+    ANIMATION_FRAME_SPEED_MS,
+    IMAGE_NAMES,
+    RHINO_STATES,
+    IMAGES_RHINO_RUNNING,
+    IMAGES_RHINO_EATING,
+    IMAGES_RHINO_CELEBRATING,
+    RHINO_STARTING_SPEED
+} from "../Constants";
+
 import { Entity } from "./Entity";
 import { Animation } from "../Core/Animation";
 import { Canvas } from "../Core/Canvas";
 import { ImageManager } from "../Core/ImageManager";
 import { intersectTwoRects, getDirectionVector } from "../Core/Utils";
 
-/**
- * The rhino starts running at this speed. Saved in case speed needs to be reset at any point.
- */
-const STARTING_SPEED: number = 10.5;
-
-/**
- * The different states the rhino can be in.
- */
-enum STATES {
-    STATE_RUNNING = "running",
-    STATE_EATING = "eating",
-    STATE_CELEBRATING = "celebrating",
-}
-
-/**
- * Sequences of images that comprise the animations for the different states of the rhino.
- */
-const IMAGES_RUNNING: IMAGE_NAMES[] = [IMAGE_NAMES.RHINO_RUN1, IMAGE_NAMES.RHINO_RUN2];
-const IMAGES_EATING: IMAGE_NAMES[] = [
-    IMAGE_NAMES.RHINO_EAT1,
-    IMAGE_NAMES.RHINO_EAT2,
-    IMAGE_NAMES.RHINO_EAT3,
-    IMAGE_NAMES.RHINO_EAT4,
-];
-const IMAGES_CELEBRATING: IMAGE_NAMES[] = [IMAGE_NAMES.RHINO_CELEBRATE1, IMAGE_NAMES.RHINO_CELEBRATE2];
 
 export class Rhino extends Entity {
     /**
@@ -45,12 +29,12 @@ export class Rhino extends Entity {
     /**
      * What state the rhino is currently in.
      */
-    state: STATES = STATES.STATE_RUNNING;
+    state: RHINO_STATES = RHINO_STATES.RUNNING;
 
     /**
      * How fast the rhino is currently moving in the game world.
      */
-    speed: number = STARTING_SPEED;
+    speed: number = RHINO_STARTING_SPEED;
 
     /**
      * Stores all of the animations available for the different states of the rhino.
@@ -86,17 +70,17 @@ export class Rhino extends Entity {
      * Create and store the animations.
      */
     setupAnimations() {
-        this.animations[STATES.STATE_RUNNING] = new Animation(IMAGES_RUNNING, true);
+        this.animations[RHINO_STATES.RUNNING] = new Animation(IMAGES_RHINO_RUNNING, true);
 
-        this.animations[STATES.STATE_EATING] = new Animation(IMAGES_EATING, false, this.celebrate.bind(this));
+        this.animations[RHINO_STATES.EATING] = new Animation(IMAGES_RHINO_EATING, false, this.celebrate.bind(this));
 
-        this.animations[STATES.STATE_CELEBRATING] = new Animation(IMAGES_CELEBRATING, true);
+        this.animations[RHINO_STATES.CELEBRATING] = new Animation(IMAGES_RHINO_CELEBRATING, true);
     }
 
     /**
      * Set the state and then set a new current animation based upon that state.
      */
-    setState(newState: STATES) {
+    setState(newState: RHINO_STATES) {
         this.state = newState;
         this.setAnimation();
     }
@@ -105,7 +89,7 @@ export class Rhino extends Entity {
      * Is the rhino currently in the running state.
      */
     isRunning(): boolean {
-        return this.state === STATES.STATE_RUNNING;
+        return this.state === RHINO_STATES.RUNNING;
     }
 
     /**
@@ -212,14 +196,14 @@ export class Rhino extends Entity {
     caughtTarget(target: Entity) {
         target.die();
 
-        this.setState(STATES.STATE_EATING);
+        this.setState(RHINO_STATES.EATING);
     }
 
     /**
      * The rhino has won, trigger the celebration state.
      */
     celebrate() {
-        this.setState(STATES.STATE_CELEBRATING);
+        this.setState(RHINO_STATES.CELEBRATING);
     }
 
     /**
@@ -240,5 +224,5 @@ export class Rhino extends Entity {
     /**
      * Nothing can kill the rhino...yet!
      */
-    die() {}
+    die() { }
 }
