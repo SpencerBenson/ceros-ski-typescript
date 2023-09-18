@@ -92,3 +92,30 @@ export const DIRECTION_IMAGES: { [key: number]: IMAGE_NAMES } = {
 
 export const ANIMATION_FRAME_SPEED_MS: number = 250;
 export const DIAGONAL_SPEED_REDUCER: number = 1.4142;
+
+/**
+ * The rhino starts running at this speed. Saved in case speed needs to be reset at any point.
+ */
+export const RHINO_STARTING_SPEED: number = 8;
+
+/**
+ * The different states the rhino can be in.
+ */
+export enum RHINO_STATES {
+    RUNNING = "running",
+    EATING = "eating",
+    CELEBRATING = "celebrating",
+}
+
+/**
+ * Sequences of images that comprise the animations for the different states of the rhino.
+ */
+export const IMAGES_RHINO_RUNNING: IMAGE_NAMES[] = [IMAGE_NAMES.RHINO_RUN1, IMAGE_NAMES.RHINO_RUN2];
+export const IMAGES_RHINO_EATING: IMAGE_NAMES[] = [
+    IMAGE_NAMES.RHINO_EAT1,
+    IMAGE_NAMES.RHINO_EAT2,
+    IMAGE_NAMES.RHINO_EAT3,
+    IMAGE_NAMES.RHINO_EAT4,
+];
+export const IMAGES_RHINO_CELEBRATING: IMAGE_NAMES[] = [IMAGE_NAMES.RHINO_CELEBRATE1, IMAGE_NAMES.RHINO_CELEBRATE2];
+
