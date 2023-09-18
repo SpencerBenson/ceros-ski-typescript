@@ -18,22 +18,6 @@ import { intersectTwoRects, Rect } from "../Core/Utils";
 import { ObstacleManager } from "./Obstacles/ObstacleManager";
 import { Obstacle } from "./Obstacles/Obstacle";
 
-
-
-
-
-
-/**
- * Mapping of the image to display for the skier based upon which direction they're facing.
- */
-// const DIRECTION_IMAGES: { [key: number]: IMAGE_NAMES } = {
-//     [DIRECTION_LEFT]: IMAGE_NAMES.SKIER_LEFT,
-//     [DIRECTION_LEFT_DOWN]: IMAGE_NAMES.SKIER_LEFTDOWN,
-//     [DIRECTION_DOWN]: IMAGE_NAMES.SKIER_DOWN,
-//     [DIRECTION_RIGHT_DOWN]: IMAGE_NAMES.SKIER_RIGHTDOWN,
-//     [DIRECTION_RIGHT]: IMAGE_NAMES.SKIER_RIGHT,
-// };
-
 export class Skier extends Entity {
     /**
      * The name of the current image being displayed for the skier.

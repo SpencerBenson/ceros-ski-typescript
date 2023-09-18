@@ -79,6 +79,10 @@ export enum DIRECTION {
     RIGHT_DOWN = 3,
     RIGHT = 4,
 }
+
+/**
+ * Mapping of the image to display for the skier based upon which direction they're facing.
+ */
 export const DIRECTION_IMAGES: { [key: number]: IMAGE_NAMES } = {
     [DIRECTION.LEFT]: IMAGE_NAMES.SKIER_LEFT,
     [DIRECTION.LEFT_DOWN]: IMAGE_NAMES.SKIER_LEFTDOWN,
