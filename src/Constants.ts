@@ -97,7 +97,7 @@ export const DIAGONAL_SPEED_REDUCER: number = 1.4142;
 /**
  * The rhino starts running at this speed. Saved in case speed needs to be reset at any point.
  */
-export const RHINO_STARTING_SPEED: number = 8;
+export const RHINO_STARTING_SPEED: number = 4.5;
 
 /**
  * The different states the rhino can be in.
@@ -134,7 +134,7 @@ export enum SKIER_STATES {
     JUMPING = "skierJumping",
 }
 export const SKIER = <const>{
-    STARTING_SPEED: 10, //The skier starts running at this speed. Saved in case speed needs to be reset at any point.
+    STARTING_SPEED: 5, //The skier starts running at this speed. Saved in case speed needs to be reset at any point.
 
     DIRECTION: { //The different directions the skier can be facing.
         LEFT: 0,
@@ -142,5 +142,12 @@ export const SKIER = <const>{
         DOWN: 2,
         RIGHT_DOWN: 3,
         RIGHT: 4,
-    }
+    },
+    JUMPING: [
+        IMAGE_NAMES.SKIER_JUMP1,
+        IMAGE_NAMES.SKIER_JUMP2,
+        IMAGE_NAMES.SKIER_JUMP3,
+        IMAGE_NAMES.SKIER_JUMP4,
+        IMAGE_NAMES.SKIER_JUMP5,
+    ]
 }

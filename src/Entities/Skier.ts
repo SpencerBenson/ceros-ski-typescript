@@ -18,6 +18,9 @@ import { intersectTwoRects, Rect } from "../Core/Utils";
 import { ObstacleManager } from "./Obstacles/ObstacleManager";
 import { Obstacle } from "./Obstacles/Obstacle";
 
+//set jumping animation
+import { Animation } from "../Core/Animation";
+
 export class Skier extends Entity {
     /**
      * The name of the current image being displayed for the skier.
@@ -52,6 +55,11 @@ export class Skier extends Entity {
     private JUMP_FRAME_DELAY: number = 5;
     private x: number;
     private y: number;
+
+    /**
+     * Stores all of the animations available for the different states of the skier jumping.
+     */
+    animations: { [key: string]: Animation } = {};
 
     /**
      * Init the skier.
