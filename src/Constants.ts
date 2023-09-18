@@ -70,10 +70,7 @@ export enum STATES {
     STATE_DEAD = "dead",
     STATE_JUMPING = "skierJumping",
 }
-export const JUMP_FRAMES = [
-    { x: 0, y: -20 },
-    { x: 0, y: -40 },
-];
+
 export enum DIRECTION {
 
     LEFT = 0,
@@ -118,4 +115,28 @@ export const IMAGES_RHINO_EATING: IMAGE_NAMES[] = [
     IMAGE_NAMES.RHINO_EAT4,
 ];
 export const IMAGES_RHINO_CELEBRATING: IMAGE_NAMES[] = [IMAGE_NAMES.RHINO_CELEBRATE1, IMAGE_NAMES.RHINO_CELEBRATE2];
+export const JUMP_FRAMES = [
+    { x: 0, y: -20 },
+    { x: 0, y: -40 },
+];
 
+/**
+ * The different states the skier can be in.
+ */
+export enum SKIER_STATES {
+    SKIING = "skiing",
+    CRASHED = "crashed",
+    DEAD = "dead",
+    JUMPING = "skierJumping",
+}
+export const SKIER = <const>{
+    STARTING_SPEED: 10, //The skier starts running at this speed. Saved in case speed needs to be reset at any point.
+
+    DIRECTION: { //The different directions the skier can be facing.
+        LEFT: 0,
+        LEFT_DOWN: 1,
+        DOWN: 2,
+        RIGHT_DOWN: 3,
+        RIGHT: 4,
+    }
+}
