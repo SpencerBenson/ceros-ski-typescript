@@ -3,10 +3,11 @@
  * obstacles, places new obstacles as the skier moves throughout the world and displays them all to the screen.
  */
 
-import { GAME_WIDTH, GAME_HEIGHT } from "../../Constants";
+import { GAME_WIDTH, GAME_HEIGHT, IMAGE_NAMES } from "../../Constants";
 import { Canvas } from "../../Core/Canvas";
 import { ImageManager } from "../../Core/ImageManager";
-import { Position, randomInt, Rect } from "../../Core/Utils";
+import { intersectTwoRects, Position, randomInt, Rect } from "../../Core/Utils";
+import { Skier } from "../Skier";
 import { Obstacle } from "./Obstacle";
 
 /**
@@ -45,13 +46,15 @@ export class ObstacleManager {
      * Stored reference to the Canvas obstacles are drawn to
      */
     canvas: Canvas;
+    skier: Skier;
 
     /**
      * Init the Obstacle Manager.
      */
-    constructor(imageManager: ImageManager, canvas: Canvas) {
+    constructor(imageManager: ImageManager, canvas: Canvas, skier: Skier) {
         this.imageManager = imageManager;
         this.canvas = canvas;
+        this.skier = skier;
     }
 
     getObstacles(): Obstacle[] {
@@ -97,6 +100,16 @@ export class ObstacleManager {
             return;
         }
 
+        if (!this.skier || !this.skier.getPosition || !this.skier.getBounds) {
+            return;
+        }
+
+        const skierBounds = this.skier.getBounds();
+
+        if (!skierBounds) {
+            return;
+        }
+
         if (gameWindow.left < previousGameWindow.left) {
             this.placeObstacleLeft(gameWindow);
         } else if (gameWindow.left > previousGameWindow.left) {
@@ -107,6 +120,33 @@ export class ObstacleManager {
             this.placeObstacleTop(gameWindow);
         } else if (gameWindow.top > previousGameWindow.top) {
             this.placeObstacleBottom(gameWindow);
+        }
+
+        // Check if the skier is on a JUMP_RAMP obstacle
+        const rampObstacle = this.obstacles.find((obstacle: Obstacle) => {
+            if (obstacle.getBounds()) {
+                return obstacle.imageName === IMAGE_NAMES.JUMP_RAMP;
+            }
+            return false;
+        });
+
+        if (rampObstacle && rampObstacle.getBounds() && intersectTwoRects(skierBounds, rampObstacle.getBounds()!)) {
+            this.skier.jump();
+        }
+
+        // Check if the skier is on a ROCK obstacle
+        const rockObstacle = this.obstacles.find((obstacle: Obstacle) => {
+            if (obstacle.getBounds()) {
+                return (
+                    obstacle.imageName === IMAGE_NAMES.ROCK1 ||
+                    obstacle.imageName === IMAGE_NAMES.ROCK2
+                );
+            }
+            return false;
+        });
+
+        if (rockObstacle && rockObstacle.getBounds() && intersectTwoRects(skierBounds, rockObstacle.getBounds()!)) {
+            this.skier.jump();
         }
     }
 
