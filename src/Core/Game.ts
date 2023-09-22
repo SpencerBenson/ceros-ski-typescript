@@ -54,13 +54,21 @@ export class Game {
     init() {
         this.canvas = new Canvas(GAME_CANVAS, GAME_WIDTH, GAME_HEIGHT);
         this.imageManager = new ImageManager();
-        this.obstacleManager = new ObstacleManager(this.imageManager, this.canvas);
 
+        // Initialize the skier first
         this.skier = new Skier(0, 0, this.imageManager, this.obstacleManager, this.canvas);
+
+        // Pass the skier instance to the obstacle manager
+        this.obstacleManager = new ObstacleManager(this.imageManager, this.canvas, this.skier);
+
+        // Initialize the rhino
         this.rhino = new Rhino(-500, -2000, this.imageManager, this.canvas);
 
+        // Calculate the game window and place initial obstacles
         this.calculateGameWindow();
         this.obstacleManager.placeInitialObstacles();
+
+        // Draw start instructions
         this.drawStartInstructions();
     }
 
@@ -134,7 +142,7 @@ export class Game {
     calculateGameWindow() {
         const skierPosition: Position = this.skier.getPosition();
         const left: number = skierPosition.x - GAME_WIDTH / 2;
-        const top: number = skierPosition.y - GAME_HEIGHT / 2;
+        const top: number = skierPosition.y - GAME_HEIGHT / 3;
 
         this.gameWindow = new Rect(left, top, left + GAME_WIDTH, top + GAME_HEIGHT);
     }
