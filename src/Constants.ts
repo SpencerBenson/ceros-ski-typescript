@@ -9,6 +9,7 @@ export enum KEYS {
     RIGHT = "ArrowRight",
     UP = "ArrowUp",
     DOWN = "ArrowDown",
+    SPACE = " ",
 }
 
 export enum IMAGE_NAMES {
@@ -68,7 +69,7 @@ export enum STATES {
     STATE_SKIING = "skiing",
     STATE_CRASHED = "crashed",
     STATE_DEAD = "dead",
-    STATE_JUMPING = "skierJumping",
+    STATE_JUMPING = "jumping",
 }
 
 export enum DIRECTION {
@@ -118,6 +119,17 @@ export const IMAGES_RHINO_EATING: IMAGE_NAMES[] = [
     IMAGE_NAMES.RHINO_EAT3,
     IMAGE_NAMES.RHINO_EAT4,
 ];
+
+
+export const IMAGES_SKIER_JUMPING: IMAGE_NAMES[] = [
+    IMAGE_NAMES.SKIER_JUMP1,
+    IMAGE_NAMES.SKIER_JUMP2,
+    IMAGE_NAMES.SKIER_JUMP3,
+    IMAGE_NAMES.SKIER_JUMP4,
+    IMAGE_NAMES.SKIER_JUMP5,
+]
+
+
 export const IMAGES_RHINO_CELEBRATING: IMAGE_NAMES[] = [IMAGE_NAMES.RHINO_CELEBRATE1, IMAGE_NAMES.RHINO_CELEBRATE2];
 export const JUMP_FRAMES = [
     { x: 0, y: -20 },
@@ -131,7 +143,7 @@ export enum SKIER_STATES {
     SKIING = "skiing",
     CRASHED = "crashed",
     DEAD = "dead",
-    JUMPING = "skierJumping",
+    JUMPING = "jumping",
 }
 export const SKIER = <const>{
     STARTING_SPEED: 5, //The skier starts running at this speed. Saved in case speed needs to be reset at any point.
