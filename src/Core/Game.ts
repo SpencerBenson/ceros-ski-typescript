@@ -57,21 +57,13 @@ export class Game {
     init() {
         this.canvas = new Canvas(GAME_CANVAS, GAME_WIDTH, GAME_HEIGHT);
         this.imageManager = new ImageManager();
+        this.obstacleManager = new ObstacleManager(this.imageManager, this.canvas);
 
-        // Initialize the skier first
         this.skier = new Skier(0, 0, this.imageManager, this.obstacleManager, this.canvas);
-
-        // Pass the skier instance to the obstacle manager
-        this.obstacleManager = new ObstacleManager(this.imageManager, this.canvas, this.skier);
-
-        // Initialize the rhino
         this.rhino = new Rhino(-500, -2000, this.imageManager, this.canvas);
 
-        // Calculate the game window and place initial obstacles
         this.calculateGameWindow();
         this.obstacleManager.placeInitialObstacles();
-
-        // Draw start instructions
         this.drawStartInstructions();
     }
 
