@@ -5,8 +5,28 @@
 import "../css/game.css";
 import { Game } from "./Core/Game";
 
-document.addEventListener("DOMContentLoaded", async () => {
+let skiGame: Game;
+
+async function startGame() {
     const skiGame: Game = new Game();
     await skiGame.load();
     skiGame.run();
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    startGame();
 });
+document.addEventListener("GameOver", async () => {
+    skiGame.stop();
+    startGame();
+})
+document.addEventListener("GameOver", () => {
+    // Clean up the old game 
+    if (skiGame) {
+        skiGame.cleanup();
+    }
+    setTimeout(() => {
+        startGame(); // Start a new game when "GameOver" occurs
+    }, 5000);
+});
+
