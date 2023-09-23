@@ -9,8 +9,7 @@ import {
     DIAGONAL_SPEED_REDUCER,
     KEYS, SKIER,
     DIRECTION_IMAGES,
-    IMAGES_SKIER_JUMPING,
-    ANIMATION_FRAME_SPEED_MS
+    IMAGES_SKIER_JUMPING
 } from "../Constants";
 import { Entity } from "./Entity";
 import { Canvas } from "../Core/Canvas";
@@ -108,7 +107,7 @@ export class Skier extends Entity {
             return;
         }
 
-        if (gameTime - this.curAnimationFrameTime > ANIMATION_FRAME_SPEED_MS) {
+        if (gameTime - this.curAnimationFrameTime > SKIER.ANIMATION_FRAME_SPEED_MS) {
             this.nextAnimationFrame(gameTime);
         }
     }
@@ -181,6 +180,13 @@ export class Skier extends Entity {
     isCrashed(): boolean {
         return this.state === SKIER_STATES.CRASHED;
     }
+    /**
+     *   check if skier is facing left or right
+     */
+
+    isHorizontal(): boolean {
+        return (this.direction === SKIER.DIRECTION.LEFT || this.direction === SKIER.DIRECTION.LEFT)
+    }
 
     /**
      * Is the skier currently in the skiing state
@@ -200,6 +206,15 @@ export class Skier extends Entity {
      */
     isDead(): boolean {
         return this.state === SKIER_STATES.DEAD;
+    }
+    /**
+     * Has skier stopped. Helps to update speed in the game's screen.
+     */
+    isStopped(): boolean {
+        if (this.isDead() || this.isCrashed() || this.isHorizontal()) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -254,8 +269,33 @@ export class Skier extends Entity {
             return;
         }
 
+        // Increase the duration of the jumping state (e.g., from 2000 milliseconds to 4000 milliseconds)
+        const jumpDuration = 4000;
+
+        // Increase the distance traveled during the jump (adjust the values as needed)
+        const jumpDistanceX = 0; // Horizontal distance
+        const jumpDistanceY = 50; // Vertical distance
+
         this.setState(SKIER_STATES.JUMPING);
+
+        // After the specified duration, return to the skiing state
+        setTimeout(() => {
+            this.setState(SKIER_STATES.SKIING);
+        }, jumpDuration);
+
+        // Adjust the skier's position based on the increased jump distance
+        if (this.direction === SKIER.DIRECTION.LEFT_DOWN) {
+            this.position.x -= jumpDistanceX / DIAGONAL_SPEED_REDUCER;
+            this.position.y += jumpDistanceY / DIAGONAL_SPEED_REDUCER;
+        } else if (this.direction === SKIER.DIRECTION.RIGHT_DOWN) {
+            this.position.x += jumpDistanceX / DIAGONAL_SPEED_REDUCER;
+            this.position.y += jumpDistanceY / DIAGONAL_SPEED_REDUCER;
+        } else {
+            this.position.y += jumpDistanceY;
+        }
     }
+
+
     /**
      * Move the skier based upon the direction they're currently facing. This handles frame update movement.
      */
@@ -468,7 +508,16 @@ export class Skier extends Entity {
                 // Trigger skier's jump if intersecting with a jump ramp
                 if (intersectTwoRects(skierBounds, obstacleBounds)) {
                     this.jump();
+
                     return false; // No crash when jumping on a ramp
+                }
+            }
+
+            // Check for intersection with rocks when jumping
+            if (this.isJumping() && (obstacle.imageName === IMAGE_NAMES.ROCK1 || obstacle.imageName === IMAGE_NAMES.ROCK2)) {
+                if (intersectTwoRects(skierBounds, obstacleBounds)) {
+                    // Handle jumping over the rock (you can add animations or effects here)
+                    return false; // No crash when jumping over a rock
                 }
             }
 
