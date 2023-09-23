@@ -496,8 +496,13 @@ export class Skier extends Entity {
     /**
      * Kill the skier by putting them into the "dead" state and stopping their movement.
      */
-    die() {
+    die(): boolean {
         this.state = SKIER_STATES.DEAD;
         this.speed = 0;
+
+        const gameOverEvent = new CustomEvent("GameOver");
+        document.dispatchEvent(gameOverEvent);
+
+        return true
     }
 }

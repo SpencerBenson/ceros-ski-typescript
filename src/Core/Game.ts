@@ -15,7 +15,10 @@ export class Game {
      * The canvas the game will be displayed on
      */
     private canvas!: Canvas;
-
+    /**
+     * Check whether game is in progress
+     */
+    isGameRunning: boolean = false;
     /**
      * Coordinates denoting the active rectangular space in the game world
      * */
@@ -65,12 +68,30 @@ export class Game {
     }
 
     /**
-     * Add instructions to player
-     */
+ * Add instructions to the player and start the game when any arrow key is pressed.
+ */
     drawStartInstructions() {
-        this.canvas.ctx.fillStyle = "white";
+        // Display start instructions
         this.canvas.ctx.font = "24px Arial";
-        this.canvas.ctx.fillText("Press any arrow key to start the game", 50, this.canvas.height / 2);
+        this.canvas.ctx.fillText("Press any arrow key to start the game.", this.canvas.width / 3, this.canvas.height / 2);
+
+        // Listen for arrow key presses to start the game
+        const startGameListener = (event: KeyboardEvent) => {
+            if (event.key.startsWith("Arrow")) {
+                this.isGameRunning = true; // Start the game loop when an arrow key is pressed
+                document.removeEventListener("keydown", startGameListener); // Remove the event listener
+            }
+        };
+
+        document.addEventListener("keydown", startGameListener);
+    }
+
+
+    /**
+     * Stop the game
+     */
+    stop() {
+        this.isGameRunning = false;
     }
 
     /**
@@ -92,10 +113,14 @@ export class Game {
      * The main game loop. Clear the screen, update the game objects and then draw them.
      */
     run() {
-        this.canvas.clearCanvas();
-
-        this.updateGameWindow();
-        this.drawGameWindow();
+        if (!this.isGameRunning) {
+            this.canvas.clearCanvas();
+            this.drawStartInstructions(); // Display start instructions
+        } else {
+            this.canvas.clearCanvas();
+            this.updateGameWindow();
+            this.drawGameWindow();
+        }
 
         requestAnimationFrame(this.run.bind(this));
     }
@@ -152,6 +177,10 @@ export class Game {
                 event.preventDefault();
             }
         }
+    }
+
+    cleanup() {
+        this.init()
     }
 
 }
