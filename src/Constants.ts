@@ -101,7 +101,7 @@ export const DIAGONAL_SPEED_REDUCER: number = 1.4142;
 /**
  * The rhino starts running at this speed. Saved in case speed needs to be reset at any point.
  */
-export const RHINO_STARTING_SPEED: number = 4.5;
+export const RHINO_STARTING_SPEED: number = 5.5;
 
 /**
  * The different states the rhino can be in.
