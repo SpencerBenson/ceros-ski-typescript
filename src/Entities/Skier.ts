@@ -481,6 +481,7 @@ export class Skier extends Entity {
     }
 
 
+
     /**
      * Crash the skier. Set the state to crashed, set the speed to zero cause you can't move when crashed and update the
      * image.
