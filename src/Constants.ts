@@ -150,7 +150,7 @@ export enum SKIER_STATES {
 }
 export const SKIER = <const>{
     STARTING_SPEED: 5, //The skier starts running at this speed. Saved in case speed needs to be reset at any point.
-
+    ANIMATION_FRAME_SPEED_MS: 1000,
     DIRECTION: { //The different directions the skier can be facing.
         LEFT: 0,
         LEFT_DOWN: 1,

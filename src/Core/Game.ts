@@ -42,10 +42,26 @@ export class Game {
      * The enemy that chases the skier
      */
     private rhino!: Rhino;
-
+    /**
+     * The skier speed
+     */
+    private skierSpeed: number = 0;
+    /**
+     * The total distance covered by the skier
+     */
+    private skierDistance: number = 0;
     /**
      * Initialize the game and setup any input handling needed.
      */
+
+    private startTime: number = Date.now(); // Store the time when the game starts
+    private skierStartPosition: Position | null = null; // Store the skier's initial position
+    private skierDistanceCovered: number = 0; // Store the total distance covered by the skier
+    private firstObstaclePosition: Position | null = null;
+    private pixelsPerMeter = 3780;
+
+
+
     constructor() {
         this.init();
         this.setupInputHandling();
@@ -62,18 +78,55 @@ export class Game {
         this.skier = new Skier(0, 0, this.imageManager, this.obstacleManager, this.canvas);
         this.rhino = new Rhino(-500, -2000, this.imageManager, this.canvas);
 
+        // Store the skier's initial position
+        this.skierStartPosition = this.skier.getPosition();
+
+        // Initialize startTime here
+        this.startTime = Date.now();
+
         this.calculateGameWindow();
         this.obstacleManager.placeInitialObstacles();
         this.drawStartInstructions();
     }
 
+
     /**
  * Add instructions to the player and start the game when any arrow key is pressed.
  */
     drawStartInstructions() {
-        // Display start instructions
-        this.canvas.ctx.font = "24px Arial";
-        this.canvas.ctx.fillText("Press any arrow key to start the game.", this.canvas.width / 3, this.canvas.height / 2);
+        // Display game instructions
+        this.canvas.ctx.font = "bold 24px Arial";
+        const gameName = "Ceros Ski Game";
+        const startInstrictions = "Press any arrow key to start the game.";
+        const instructionsTitle = "Instructions:";
+        let instructions: string[] = [
+            "Use the arrow keys to control the direction of the skier.",
+            "Press the spacebar to jump.",
+            "The skier will jump over a jump ramp automatically.",
+            "Wait 5 seconds after the game ends for instructions on how to start another game.",
+            "You can only jump over rocks but not the trees.",
+            "The rhino will catch up with you if you fall or are slow.",
+            "Your speed and distance will be calculated in the top left of the screen."
+        ];
+        let counter = 30;
+        let startPositionX = this.canvas.width / 3;
+        let startPositionY = this.canvas.height / 3;
+        let positionY = startPositionY + 90;
+
+        this.canvas.ctx.fillText(gameName, startPositionX, startPositionY);
+        this.canvas.ctx.font = "18px Arial";
+        this.canvas.ctx.fillText(startInstrictions, startPositionX + 30, startPositionY + 30);
+
+        this.canvas.ctx.font = "bold 20px Arial";
+        this.canvas.ctx.fillText(instructionsTitle, startPositionX + 10, startPositionY + 60);
+        this.canvas.ctx.font = "18px Arial";
+        for (let i = 0; i < instructions.length; i++) {
+            this.canvas.ctx.fillText(`${i + 1}. ${instructions[i]}`, startPositionX + 30, positionY);
+
+            positionY += counter
+        }
+
+
 
         // Listen for arrow key presses to start the game
         const startGameListener = (event: KeyboardEvent) => {
@@ -118,7 +171,7 @@ export class Game {
             this.drawStartInstructions(); // Display start instructions
         } else {
             this.canvas.clearCanvas();
-            this.updateGameWindow();
+            this.updateGameWindow(); // Call the updateGameWindow function
             this.drawGameWindow();
         }
 
@@ -126,31 +179,84 @@ export class Game {
     }
 
     /**
-     * Do any updates needed to the game objects
-     */
+/**
+ * Do any updates needed to the game objects
+ */
     updateGameWindow() {
-        this.gameTime = Date.now();
+        const currentTime = Date.now();
+        const deltaTime = currentTime - this.startTime;
+
+        if (this.skier.isSkiing()) {
+            // Calculate the distance covered based on the skier's position change
+            const currentPosition = this.skier.getPosition();
+            if (this.skierStartPosition) {
+                const deltaX = currentPosition.x - this.skierStartPosition.x;
+                const deltaY = currentPosition.y - this.skierStartPosition.y;
+
+                this.skierDistanceCovered += Math.sqrt(deltaX * deltaX / this.pixelsPerMeter + deltaY * deltaY / this.pixelsPerMeter);
+            }
+
+            // Calculate the skier's speed (distance covered / time)
+            this.skierSpeed = this.skierDistanceCovered / (deltaTime / 1000);
+        }
+        // Speed when skier stops
+        if (!this.skier.isSkiing() && !this.skier.isJumping()) {
+            this.skierSpeed = 0
+        }
+
+        this.gameTime = currentTime;
 
         const previousGameWindow: Rect = this.gameWindow;
         this.calculateGameWindow();
 
         this.obstacleManager.placeNewObstacle(this.gameWindow, previousGameWindow);
 
+        // Check if the first obstacle is rendered
+        if (!this.firstObstaclePosition && this.obstacleManager.obstacles.length > 0) {
+            this.firstObstaclePosition = this.obstacleManager.obstacles[0].getPosition();
+        }
+
+        // Calculate the distance covered based on the skier's position relative to the first rendered obstacle
+        if (this.firstObstaclePosition) {
+            const currentPosition = this.skier.getPosition();
+            const deltaX = currentPosition.x - this.firstObstaclePosition.x;
+            const deltaY = currentPosition.y - this.firstObstaclePosition.y;
+            this.skierDistanceCovered = Math.sqrt(deltaX * deltaX / this.pixelsPerMeter + deltaY * deltaY / this.pixelsPerMeter);
+
+            // Calculate the skier's speed (distance covered / time)
+            // Speed when skier stops
+            if (!this.skier.isStopped()) {
+                this.skierSpeed = this.skierDistanceCovered / (deltaTime / 1000);
+            } else {
+                this.skierSpeed = 0;
+            }
+        }
+
         this.skier.update();
         this.rhino.update(this.gameTime, this.skier);
     }
 
     /**
-     * Draw all entities to the screen, in the correct order. Also setup the canvas draw offset so that we see the
-     * rectangular space denoted by the game window.
-     */
+ * Draw all entities to the screen, in the correct order. Also setup the canvas draw offset so that we see the
+ * rectangular space denoted by the game window.
+ */
     drawGameWindow() {
         this.canvas.setDrawOffset(this.gameWindow.left, this.gameWindow.top);
 
         this.skier.draw();
         this.rhino.draw();
         this.obstacleManager.drawObstacles();
+
+        // Display skier's distance and speed
+        this.canvas.ctx.font = "18px Arial";
+        this.canvas.ctx.fillStyle = "black"; // Change text color to white
+        this.canvas.ctx.fillText(`Distance: ${this.skierDistanceCovered.toFixed(0)
+            } meters`, 20, 60);
+        this.canvas.ctx.fillText(`Speed: ${this.skierSpeed.toFixed(1)} m / s`, 20, 90);
     }
+
+
+
 
     /**
      * Calculate the game window (the rectangular space drawn to the screen). It's centered around the player and must
