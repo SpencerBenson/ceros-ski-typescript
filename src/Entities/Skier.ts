@@ -446,8 +446,8 @@ export class Skier extends Entity {
     }
 
     /**
-     * Go through all the obstacles in the game and see if the skier collides with any of them. If so, crash the skier.
-     */
+    * Go through all the obstacles in the game and see if the skier collides with any of them. If so, crash the skier.
+    */
     checkIfHitObstacle() {
         const skierBounds = this.getBounds();
         if (!skierBounds) {
@@ -460,6 +460,16 @@ export class Skier extends Entity {
                 return false;
             }
 
+            // Check for intersection with jump ramp obstacle
+            const isJumpRamp = obstacle.imageName === IMAGE_NAMES.JUMP_RAMP;
+            if (isJumpRamp) {
+                // Trigger skier's jump if intersecting with a jump ramp
+                if (intersectTwoRects(skierBounds, obstacleBounds)) {
+                    this.jump();
+                    return false; // No crash when jumping on a ramp
+                }
+            }
+
             return intersectTwoRects(skierBounds, obstacleBounds);
         });
 
@@ -467,6 +477,7 @@ export class Skier extends Entity {
             this.crash();
         }
     }
+
 
     /**
      * Crash the skier. Set the state to crashed, set the speed to zero cause you can't move when crashed and update the
