@@ -42,11 +42,4 @@ module.exports = {
             patterns: [{ from: "img/*", to: "" }],
         }),
     ],
-
-    // Add the following configuration to resolve module aliases used by Jest
-    resolve: {
-        alias: {
-            "^@/(.*)$": "<rootDir>/src/$1",
-        },
-    },
 };
