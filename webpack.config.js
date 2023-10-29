@@ -2,8 +2,7 @@ const path = require("path");
 const htmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
-// Webpack Configuration
-const config = {
+module.exports = {
     entry: ["./src/index.ts"],
 
     output: {
@@ -14,9 +13,14 @@ const config = {
     module: {
         rules: [
             {
-                test: /\.ts$/,
+                test: /\.(js|ts)$/,
                 exclude: /node_modules/,
-                use: ["ts-loader"],
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: ["@babel/preset-env", "@babel/preset-typescript"],
+                    },
+                },
             },
             {
                 test: /\.css$/,
@@ -39,5 +43,3 @@ const config = {
         }),
     ],
 };
-
-module.exports = config;
